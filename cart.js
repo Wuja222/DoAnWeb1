@@ -1,12 +1,15 @@
-// Định dạng tiền tệ Việt Nam (VD: 850000 -> "850.000 đ")
+
+// ĐỊNH DẠNG TIỀN TỆ
 function formatPrice(number) {
     return Number(number).toLocaleString("vi-VN") + " đ";
 }
 
-// 1. Hiển thị danh sách sản phẩm trong giỏ hàng
+
+// 1. HIỂN THỊ GIỎ HÀNG
 function renderCart() {
-    const cart = StorageAPI.getCart();
-    const products = StorageAPI.getProducts();
+    const cart = getData("cart");
+    const products = getData("products");
+
     const cartTable = document.getElementById("cart-items-table");
     const grandTotal = document.getElementById("cart-grand-total");
 
@@ -25,13 +28,15 @@ function renderCart() {
         `;
     } else {
         cartTable.innerHTML = cart.map(item => {
-            // Lấy dữ liệu chi tiết của sản phẩm từ bảng products
-            const product = products.find(p => String(p.id) === String(item.id));
-            
-            // Nếu sản phẩm không tồn tại hoặc bị xóa
+
+            const product = products.find(
+                p => String(p.id) === String(item.id)
+            );
+
             if (!product) return "";
 
             const lineTotal = product.price * item.quantity;
+
             total += lineTotal;
             totalQuantity += item.quantity;
 
@@ -39,24 +44,53 @@ function renderCart() {
                 <tr>
                     <td>
                         <div class="product-info">
-                            <img src="${product.image}" class="product-small-img" alt="${product.name}">
+                            <img src="${product.image}"
+                                 class="product-small-img"
+                                 alt="${product.name}">
+
                             <div class="product-info-text">
                                 <strong>${product.name}</strong>
-                                <span class="product-type">${product.category || "Đồng hồ"}</span>
+                                <span class="product-type">
+                                    ${product.category || "Đồng hồ"}
+                                </span>
                             </div>
                         </div>
                     </td>
-                    <td class="product-price">${formatPrice(product.price)}</td>
+
+                    <td class="product-price">
+                        ${formatPrice(product.price)}
+                    </td>
+
                     <td>
                         <div class="product-quantity">
-                            <button class="qty-btn" onclick="changeQuantity('${item.id}', -1)">-</button>
-                            <input class="qty-input" type="number" min="1" max="${product.quantity}" value="${item.quantity}" onchange="setQuantity('${item.id}', this.value)">
-                            <button class="qty-btn" onclick="changeQuantity('${item.id}', 1)">+</button>
+                            <button class="qty-btn"
+                                onclick="changeQuantity('${item.id}', -1)">
+                                -
+                            </button>
+
+                            <input class="qty-input"
+                                type="number"
+                                min="1"
+                                max="${product.quantity}"
+                                value="${item.quantity}"
+                                onchange="setQuantity('${item.id}', this.value)">
+
+                            <button class="qty-btn"
+                                onclick="changeQuantity('${item.id}', 1)">
+                                +
+                            </button>
                         </div>
                     </td>
-                    <td class="product-line-total">${formatPrice(lineTotal)}</td>
+
+                    <td class="product-line-total">
+                        ${formatPrice(lineTotal)}
+                    </td>
+
                     <td>
-                        <button class="remove-btn" title="Xóa" onclick="deleteProduct('${item.id}')">🗑</button>
+                        <button class="remove-btn"
+                            onclick="deleteProduct('${item.id}')">
+                            🗑
+                        </button>
                     </td>
                 </tr>
             `;
@@ -66,21 +100,37 @@ function renderCart() {
     grandTotal.textContent = formatPrice(total);
 
     const totalLabel = document.querySelector(".cart-total-row strong");
+
     if (totalLabel) {
-        totalLabel.textContent = `Tổng tiền (${totalQuantity} sản phẩm)`;
+        totalLabel.textContent =
+            `Tổng tiền (${totalQuantity} sản phẩm):`;
     }
 
-    updateCartBadge();
+    if (typeof updateCartBadge === "function") {
+        updateCartBadge();
+    }
 }
 
-// 2. Tăng / giảm số lượng (+ / -)
+
+// 2. TĂNG / GIẢM SỐ LƯỢNG
 function changeQuantity(id, amount) {
-    let cart = StorageAPI.getCart();
-    const products = StorageAPI.getProducts();
-    const item = cart.find(c => String(c.id) === String(id));
-    const product = products.find(p => String(p.id) === String(id));
+    let cart = getData("cart");
+    const products = getData("products");
+
+    const item = cart.find(
+        c => String(c.id) === String(id)
+    );
+
+    const product = products.find(
+        p => String(p.id) === String(id)
+    );
 
     if (!item || !product) return;
+
+    if (product.quantity < 1) {
+        alert("Sản phẩm đã hết hàng!");
+        return;
+    }
 
     const newQty = item.quantity + amount;
 
@@ -93,21 +143,40 @@ function changeQuantity(id, amount) {
         item.quantity = newQty;
     }
 
-    StorageAPI.saveCart(cart);
+    saveData("cart", cart);
+
     renderCart();
 }
 
-// 3. Nhập trực tiếp số lượng vào ô input
+
+// 3. NHẬP TRỰC TIẾP SỐ LƯỢNG
 function setQuantity(id, value) {
-    let cart = StorageAPI.getCart();
-    const products = StorageAPI.getProducts();
-    const item = cart.find(c => String(c.id) === String(id));
-    const product = products.find(p => String(p.id) === String(id));
+    let cart = getData("cart");
+    const products = getData("products");
+
+    const item = cart.find(
+        c => String(c.id) === String(id)
+    );
+
+    const product = products.find(
+        p => String(p.id) === String(id)
+    );
 
     if (!item || !product) return;
 
+    if (product.quantity < 1) {
+        alert("Sản phẩm đã hết hàng!");
+        item.quantity = 0;
+        saveData("cart", cart);
+        renderCart();
+        return;
+    }
+
     let qty = parseInt(value, 10);
-    if (isNaN(qty) || qty < 1) qty = 1;
+
+    if (isNaN(qty) || qty < 1) {
+        qty = 1;
+    }
 
     if (qty > product.quantity) {
         alert(`Kho chỉ còn tối đa ${product.quantity} sản phẩm!`);
@@ -115,25 +184,35 @@ function setQuantity(id, value) {
     }
 
     item.quantity = qty;
-    StorageAPI.saveCart(cart);
+
+    saveData("cart", cart);
+
     renderCart();
 }
 
-// 4. Xóa sản phẩm khỏi giỏ hàng
+
+// 4. XÓA SẢN PHẨM
 function deleteProduct(id) {
-    if (!confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ không?")) return;
+    if (!confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ không?")) {
+        return;
+    }
 
-    let cart = StorageAPI.getCart();
-    cart = cart.filter(item => String(item.id) !== String(id));
+    let cart = getData("cart");
 
-    StorageAPI.saveCart(cart);
+    cart = cart.filter(
+        item => String(item.id) !== String(id)
+    );
+
+    saveData("cart", cart);
+
     renderCart();
 }
 
-// 5. Xử lý đặt hàng: Kiểm tra thông tin -> Trừ kho -> Lưu đơn hàng
+
+// 5. ĐẶT HÀNG
 function checkout() {
-    const cart = StorageAPI.getCart();
-    const products = StorageAPI.getProducts();
+    const cart = getData("cart");
+    const products = getData("products");
 
     if (cart.length === 0) {
         alert("Giỏ hàng của bạn đang trống!");
@@ -143,34 +222,48 @@ function checkout() {
     const name = document.getElementById("cust-name").value.trim();
     const phone = document.getElementById("cust-phone").value.trim();
     const address = document.getElementById("cust-address").value.trim();
+    const email = document.getElementById("cust-email").value.trim();
 
-    // Kiểm tra các trường bắt buộc
+    // KIỂM TRA THÔNG TIN
     if (!name || !phone || !address) {
-        alert("Vui lòng nhập đầy đủ các thông tin bắt buộc (*)");
+        alert("Vui lòng nhập đầy đủ thông tin bắt buộc!");
         return;
     }
 
-    // Kiểm tra số điện thoại (10 - 11 số)
     if (!/^[0-9]{10,11}$/.test(phone)) {
-        alert("Số điện thoại không hợp lệ (yêu cầu 10 - 11 chữ số)!");
+        alert("Số điện thoại không hợp lệ!");
         return;
     }
 
-    // Kiểm tra tồn kho trước khi chốt đơn
+    // KIỂM TRA TỒN KHO
     for (let item of cart) {
-        const prod = products.find(p => String(p.id) === String(item.id));
+        const prod = products.find(
+            p => String(p.id) === String(item.id)
+        );
+
         if (!prod || prod.quantity < item.quantity) {
-            alert(`Sản phẩm "${prod ? prod.name : item.id}" không đủ tồn kho để giao!`);
+            alert(
+                `Sản phẩm "${prod ? prod.name : item.id}" không đủ tồn kho!`
+            );
             return;
         }
     }
 
-    const paymentInput = document.querySelector('input[name="payment"]:checked');
-    const paymentMethod = paymentInput ? (paymentInput.value === "COD" ? "Thanh toán khi nhận hàng (COD)" : "Chuyển khoản ngân hàng") : "Thanh toán khi nhận hàng (COD)";
+    // PHƯƠNG THỨC THANH TOÁN
+    const paymentInput = document.querySelector(
+        'input[name="payment"]:checked'
+    );
 
-    // Tạo danh sách sản phẩm chi tiết của đơn
+    const paymentMethod = paymentInput
+        ? paymentInput.value
+        : "COD";
+
+    // TẠO CHI TIẾT ĐƠN HÀNG
     const orderItems = cart.map(item => {
-        const prod = products.find(p => String(p.id) === String(item.id));
+        const prod = products.find(
+            p => String(p.id) === String(item.id)
+        );
+
         return {
             id: prod.id,
             name: prod.name,
@@ -179,8 +272,12 @@ function checkout() {
         };
     });
 
-    const total = orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const total = orderItems.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+    );
 
+    // XÁC NHẬN ĐẶT HÀNG
     const confirmOrder = confirm(
         "XÁC NHẬN ĐẶT HÀNG\n\n" +
         "Khách hàng: " + name + "\n" +
@@ -191,10 +288,17 @@ function checkout() {
 
     if (!confirmOrder) return;
 
-    // 1. Tạo đơn hàng mới theo quy ước của nhóm
+    // TẠO ĐƠN HÀNG
     const order = {
         id: "DH_" + Date.now(),
-        customer: { name, phone, address },
+
+        customer: {
+            name: name,
+            phone: phone,
+            address: address,
+            email: email
+        },
+
         items: orderItems,
         total: total,
         paymentMethod: paymentMethod,
@@ -202,35 +306,46 @@ function checkout() {
         date: new Date().toLocaleString("vi-VN")
     };
 
-    // 2. Lưu vào mảng orders
-    const orders = StorageAPI.getOrders();
-    orders.push(order);
-    StorageAPI.saveOrders(orders);
+    // LƯU ĐƠN HÀNG
+    const orders = getData("orders");
 
-    // 3. Trừ tồn kho trong mảng products
+    orders.push(order);
+
+    saveData("orders", orders);
+
+    // TRỪ TỒN KHO
     cart.forEach(item => {
-        const prod = products.find(p => String(p.id) === String(item.id));
+        const prod = products.find(
+            p => String(p.id) === String(item.id)
+        );
+
         if (prod) {
             prod.quantity -= item.quantity;
         }
     });
-    StorageAPI.saveProducts(products);
 
-    // 4. Xóa sạch giỏ hàng
-    StorageAPI.saveCart([]);
+    saveData("products", products);
 
-    alert("Đặt hàng thành công!\nMã đơn hàng của bạn là: " + order.id);
+    // XÓA GIỎ HÀNG
+    saveData("cart", []);
 
-    // Reset lại form và vẽ lại giao diện
+    alert(
+        "Đặt hàng thành công!\n" +
+        "Mã đơn hàng: " + order.id
+    );
+
     document.querySelector(".shipping-form").reset();
+
     renderCart();
 }
 
-// 6. Gán sự kiện khi tải trang
+
+// 6. KHỞI TẠO TRANG
 document.addEventListener("DOMContentLoaded", function () {
     renderCart();
 
     const checkoutBtn = document.getElementById("checkout-btn");
+
     if (checkoutBtn) {
         checkoutBtn.addEventListener("click", checkout);
     }
