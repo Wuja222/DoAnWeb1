@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Store</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo">
+            <i class="fa-solid fa-clock"></i>
+            <h2>WatchStore</h2>
+        </div>
+
+        <div class="header-right">
+          <nav>
+            <a href="index.html">Trang chủ</a>
+            <a href="products.html">Sản phẩm</a>
+            <a href="account.html">Tài khoản</a>
+          </nav>
+
+          <div class="header-actions">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Tìm kiếm đồng hồ...">
+                <button onclick="searchProduct()" aria-label="Tìm kiếm">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
+            <a class="header-icon" href="account.html" aria-label="Tài khoản">
+                <i class="fa-solid fa-user"></i>
+            </a>
+            <a class="header-icon" href="cart.html" aria-label="Giỏ hàng">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </a>
+          </div>
+        </div>
+    </header>
+
+    <!-- BANNER -->
+    <section class="banner">
+        <div class="banner-content">
+            <h4>ĐỒNG HỒ CHÍNH HÃNG</h4>
+            <h1>Phong cách<br>khẳng định bản thân</h1>
+            <p>Chất lượng - Uy tín - Bảo hành lâu dài</p>
+
+            <a href="products.html">
+                <button>Mua ngay</button>
+            </a>
+        </div>
+
+        <div class="banner-image">
+            <img src="BannerWatchImage.png" alt="Đồng hồ Casio sang trọng">
+        </div>
+    </section>
+
+    <!-- MAIN -->
+    <section class="container">
+
+        <!-- DANH SÁCH -->
+        <div class="products-section">
+
+            <div class="section-title">
+                <h2>Sản phẩm nổi bật</h2>
+            </div>
+
+            <div id="productList" class="product-grid">
+
+            </div>
+
+        </div>
+
+        <!-- FILTER -->
+        <aside class="filter-box">
+
+            <h3>Bộ lọc</h3>
+
+            <label>Loại đồng hồ</label>
+            <select id="categoryFilter" onchange="filterProducts()">
+                <option value="">Tất cả</option>
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Thể thao">Thể thao</option>
+            </select>
+
+            <label for="minPrice">Khoảng giá (VNĐ)</label>
+            <div class="price-range">
+                <input
+                    type="number"
+                    id="minPrice"
+                    min="0"
+                    max="999000000000"
+                    value="0"
+                    placeholder="Giá từ"
+                    oninput="filterProducts()"
+                    aria-label="Giá tối thiểu"
+                >
+                <input
+                    type="number"
+                    id="maxPrice"
+                    min="0"
+                    max="999999999999"
+                    value="999999999999"
+                    placeholder="Giá đến"
+                    oninput="syncMaxPrice(this.value)"
+                    aria-label="Giá tối đa"
+                >
+            </div>
+            <label for="maxPriceRange">Giá MAX</label>
+            <input
+                type="range"
+                id="maxPriceRange"
+                min="0"
+                max="999999999999"
+                step="1000000"
+                value="999999999999"
+                oninput="updateMaxPrice(this.value)"
+                aria-label="Điều chỉnh giá tối đa"
+            >
+            <div class="range-values">
+                <span>0 VNĐ</span>
+                <span id="maxPriceDisplay">999.999.999.999 VNĐ</span>
+            </div>
+            <p id="priceFilterError" class="filter-error" role="alert"></p>
+
+            <button onclick="resetFilter()" class="reset-btn">
+                Đặt lại
+            </button>
+
+        </aside>
+
+    </section>
+<script src="storage.js"></script>
+<script src="data.js"></script>
+<script src="index.js"></script>
+</body>
+</html>
