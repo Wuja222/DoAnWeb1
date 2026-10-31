@@ -86,6 +86,46 @@
                 <option value="Thể thao">Thể thao</option>
             </select>
 
+            <label for="minPrice">Khoảng giá (VNĐ)</label>
+            <div class="price-range">
+                <input
+                    type="number"
+                    id="minPrice"
+                    min="0"
+                    max="999000000000"
+                    value="0"
+                    placeholder="Giá từ"
+                    oninput="filterProducts()"
+                    aria-label="Giá tối thiểu"
+                >
+                <input
+                    type="number"
+                    id="maxPrice"
+                    min="0"
+                    max="999999999999"
+                    value="999999999999"
+                    placeholder="Giá đến"
+                    oninput="syncMaxPrice(this.value)"
+                    aria-label="Giá tối đa"
+                >
+            </div>
+            <label for="maxPriceRange">Giá MAX</label>
+            <input
+                type="range"
+                id="maxPriceRange"
+                min="0"
+                max="999999999999"
+                step="1000000"
+                value="999999999999"
+                oninput="updateMaxPrice(this.value)"
+                aria-label="Điều chỉnh giá tối đa"
+            >
+            <div class="range-values">
+                <span>0 VNĐ</span>
+                <span id="maxPriceDisplay">999.999.999.999 VNĐ</span>
+            </div>
+            <p id="priceFilterError" class="filter-error" role="alert"></p>
+
             <button onclick="resetFilter()" class="reset-btn">
                 Đặt lại
             </button>
