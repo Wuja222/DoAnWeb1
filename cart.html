@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng - WatchStore</title>
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="cart.css">
+</head>
+<body>
+
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <span>WatchStore</span>
+            </div>
+
+            <nav class="main-nav">
+                <a href="index.html">Trang chủ</a>
+                <a href="products.html">Sản phẩm</a>
+                <a href="cart.html" class="active">Giỏ hàng</a>
+                <a href="admin.html">Tài khoản</a>
+            </nav>
+
+            <div class="header-search">
+                <input type="text" placeholder="Tìm kiếm đồng hồ...">
+                <button class="search-btn">🔍</button>
+            </div>
+
+            <div class="header-icons">
+                <span class="icon">👤</span>
+                <a href="cart.html" class="icon cart-icon">
+                    🛒<span class="cart-badge">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Nội dung giỏ hàng -->
+    <main class="cart-container">
+        <h1>Giỏ hàng của bạn</h1>
+        
+        <div class="cart-content">
+          
+            <div class="cart-items-section">
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                            <th>Thành tiền</th>
+                            <th>Xóa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cart-items-table">
+                        <!-- Render tự động từ cart.js -->
+                    </tbody>
+                </table>
+                <div class="cart-total-row">
+                    <strong>Tổng tiền (0 sản phẩm):</strong>
+                    <span id="cart-grand-total" class="total-amount">0 đ</span>
+                </div>
+            </div>
+
+            <!-- Cột phải: Form đặt hàng -->
+            <div class="shipping-section">
+                <h3>Thông tin giao hàng</h3>
+                <form class="shipping-form" onsubmit="return false;">
+                    <div class="form-group">
+                        <label for="cust-name">Họ và tên *</label>
+                        <input type="text" id="cust-name" placeholder="Nhập họ và tên" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cust-phone">Số điện thoại *</label>
+                        <input type="tel" id="cust-phone" placeholder="Nhập số điện thoại" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cust-address">Địa chỉ *</label>
+                        <input type="text" id="cust-address" placeholder="Nhập địa chỉ nhận hàng" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cust-email">Địa chỉ email (tùy chọn)</label>
+                        <input type="email" id="cust-email" placeholder="Nhập email">
+                    </div>
+                    
+                    <div class="payment-method">
+                        <p><strong>Phương thức thanh toán</strong></p>
+                        <label class="radio-option">
+                            <input type="radio" name="payment" value="COD" checked>
+                            Thanh toán khi nhận hàng (COD)
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="payment" value="Chuyển khoản">
+                            Chuyển khoản ngân hàng
+                        </label>
+                    </div>
+
+                    <button type="button" id="checkout-btn" class="checkout-btn">Đặt hàng ngay</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+   
+    <script src="storage.js"></script>
+    <script src="data.js"></script>
+    <script src="common.js"></script>
+    <script src="cart.js"></script>
+</body>
+</html>
