@@ -64,24 +64,51 @@ function searchProduct() {
 
     renderProducts(result);
 }
+// NHẬP GIÁ BẰNG BÀN PHÍM
+function syncMaxPrice(value) {
+    const maxPrice = Number(value);
 
-// LỌC THEO DANH MỤC
+    if (!Number.isFinite(maxPrice) || maxPrice < 0) return;
 
+    const range = document.getElementById("maxPriceRange");
+
+    const limitedPrice = Math.min(
+        Math.max(maxPrice, Number(range.min)),
+        Number(range.max)
+    );
+
+    range.value = limitedPrice;
+
+    document.getElementById("maxPriceDisplay").textContent =
+        formatPrice(limitedPrice);
+
+    filterProducts();
+}
 function filterProducts() {
     let category = document.getElementById("categoryFilter").value;
 
-    if (category === "") {
-        renderProducts(products);
-        return;
-    }
+    let minPrice = Number(document.getElementById("minPrice").value) || 0;
 
-    let result = products.filter(
-        (product) =>
-            product.category === category &&
-            product.isActive
-    );
+    let maxPrice = Number(document.getElementById("maxPrice").value);
+
+    let result = products.filter((product) => {
+        return (
+            product.isActive &&
+            product.price >= minPrice &&
+            product.price <= maxPrice &&
+            (category === "" || product.category === category)
+        );
+    });
 
     renderProducts(result);
+}
+function updateMaxPrice(value) {
+  const maxPrice = Number(value);
+
+  document.getElementById("maxPrice").value = maxPrice;
+  document.getElementById("maxPriceDisplay").textContent =
+    formatPrice(maxPrice);
+  filterProducts();
 }
 
 // ĐẶT LẠI BỘ LỌC
