@@ -242,6 +242,41 @@ nav a:hover {
   margin-bottom: 15px;
 }
 
+.price-range {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.price-range input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.filter-box input[type="range"] {
+  width: 100%;
+  margin: 4px 0;
+  accent-color: #111;
+  cursor: pointer;
+}
+
+.range-values {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  color: #666;
+  font-size: 12px;
+}
+
+.filter-error {
+  min-height: 18px;
+  margin-bottom: 8px;
+  color: #d00;
+  font-size: 13px;
+}
+
 .reset-btn {
   width: 100%;
   padding: 10px;
