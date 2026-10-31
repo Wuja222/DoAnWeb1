@@ -50,6 +50,9 @@ const sampleProducts = [
   },
 ];
 
+const MIN_PRICE = 0;
+const MAX_PRICE = 999999999999;
+
 if (!localStorage.getItem("products")) {
   localStorage.setItem("products", JSON.stringify(sampleProducts));
 }
@@ -132,22 +135,69 @@ function searchProduct() {
 
 function filterProducts() {
   let category = document.getElementById("categoryFilter").value;
+  let minPrice = Number(document.getElementById("minPrice").value);
+  let maxPrice = Number(document.getElementById("maxPrice").value);
+  let priceFilterError = document.getElementById("priceFilterError");
 
-  if (category === "") {
-    renderProducts(products);
-
+  if (
+    !Number.isFinite(minPrice) ||
+    !Number.isFinite(maxPrice) ||
+    minPrice < MIN_PRICE ||
+    maxPrice > MAX_PRICE ||
+    minPrice > maxPrice
+  ) {
+    priceFilterError.textContent =
+      `Vui lòng nhập khoảng từ ${formatPrice(MIN_PRICE)} đến ${formatPrice(MAX_PRICE)}, ` +
+      "trong đó giá từ không lớn hơn giá đến.";
+    document.getElementById("productList").innerHTML = "";
     return;
   }
 
+  priceFilterError.textContent = "";
+
   let result = products.filter(
-    (product) => product.category === category && product.isActive,
+    (product) =>
+      product.isActive &&
+      (category === "" || product.category === category) &&
+      product.price >= minPrice &&
+      product.price <= maxPrice,
   );
 
   renderProducts(result);
 }
 
+function updateMaxPrice(value) {
+  const maxPrice = Number(value);
+
+  document.getElementById("maxPrice").value = maxPrice;
+  document.getElementById("maxPriceDisplay").textContent =
+    formatPrice(maxPrice);
+  filterProducts();
+}
+
+function syncMaxPrice(value) {
+  const maxPrice = Number(value);
+
+  if (Number.isFinite(maxPrice)) {
+    document.getElementById("maxPriceRange").value = Math.min(
+      Math.max(maxPrice, MIN_PRICE),
+      MAX_PRICE,
+    );
+    document.getElementById("maxPriceDisplay").textContent =
+      formatPrice(maxPrice);
+  }
+
+  filterProducts();
+}
+
 function resetFilter() {
   document.getElementById("categoryFilter").value = "";
+  document.getElementById("minPrice").value = MIN_PRICE;
+  document.getElementById("maxPrice").value = MAX_PRICE;
+  document.getElementById("maxPriceRange").value = MAX_PRICE;
+  document.getElementById("maxPriceDisplay").textContent =
+    formatPrice(MAX_PRICE);
+  document.getElementById("priceFilterError").textContent = "";
 
   document.getElementById("searchInput").value = "";
 
