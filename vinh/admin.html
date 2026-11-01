@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Quản Trị - Admin WatchStore</title>
+    <!-- CSS Quản trị -->
+    <link rel="stylesheet" href="admin.css">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <div class="admin-layout">
+        <!-- ================= CỘT MENU BÊN TRÁI (SIDEBAR) ================= -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-clock-rotate-left brand-icon"></i>
+                <div class="brand-info">
+                    <span class="brand-title">Admin WatchStore</span>
+                    <span class="brand-sub">Quản trị hệ thống</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <ul>
+                    <li class="menu-item active" data-tab="dashboard">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Tổng quan</span>
+                    </li>
+                    <li class="menu-item" data-tab="products">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                        <span>Quản lý sản phẩm</span>
+                    </li>
+                    <li class="menu-item" data-tab="orders">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                        <span>Quản lý đơn hàng</span>
+                    </li>
+                    <li class="menu-item" data-tab="customers">
+                        <i class="fa-solid fa-users"></i>
+                        <span>Quản lý khách hàng</span>
+                    </li>
+                    <li class="menu-item" data-tab="imports">
+                        <i class="fa-solid fa-truck-ramp-box"></i>
+                        <span>Phiếu nhập hàng</span>
+                    </li>
+                    <li class="menu-item" data-tab="inventory">
+                        <i class="fa-solid fa-warehouse"></i>
+                        <span>Tồn kho</span>
+                    </li>
+                    <li class="menu-item" data-tab="profit">
+                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                        <span>Giá bán & Lợi nhuận</span>
+                    </li>
+                    <li class="menu-item" data-tab="settings">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>Cài đặt & Dữ liệu</span>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="../DoAnWeb1/index.html" class="logout-link" title="Quay lại trang bán hàng">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span>Về trang chủ</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- ================= KHUNG NỘI DUNG CHÍNH (MAIN WRAPPER) ================= -->
+        <div class="main-wrapper">
+            <!-- THANH ĐIỀU HƯỚNG TRÊN (TOPBAR) -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button id="toggle-sidebar-btn" class="toggle-btn" aria-label="Thu gọn menu">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h1 id="page-title">Tổng quan hệ thống</h1>
+                </div>
+
+                <div class="topbar-right">
+                    <div class="quick-status">
+                        <span class="status-indicator"></span>
+                        <span class="status-text">Hệ thống sẵn sàng</span>
+                    </div>
+                    <div class="user-badge">
+                        <img src="images/profiles.jpe" alt="Admin Avatar" class="user-avatar" onerror="this.src='https://ui-avatars.com/api/?name=Nhat+Vinh&background=2563eb&color=fff'">
+                        <div class="user-info">
+                            <span class="user-name">Nhật Vinh</span>
+                            <span class="user-role">Quản trị viên</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- KHÔNG GIAN NỘI DUNG THAY ĐỔI THEO TAB -->
+            <main class="content-body">
+
+                <!-- ----------------- TAB 1: TỔNG QUAN (DASHBOARD) ----------------- -->
+                <section id="tab-dashboard" class="tab-pane active">
+                    <!-- 4 Thẻ thống kê KPI -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon icon-blue">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Tổng sản phẩm</span>
+                                <h3 id="dash-total-products" class="stat-value">0</h3>
+                                <span class="stat-sub text-muted">Có sẵn trong kho</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon icon-cyan">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Tổng khách hàng</span>
+                                <h3 id="dash-total-customers" class="stat-value">0</h3>
+                                <span class="stat-sub text-muted">Tài khoản mua hàng</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon icon-green">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Tổng đơn hàng</span>
+                                <h3 id="dash-total-orders" class="stat-value">0</h3>
+                                <span class="stat-sub text-muted">Từ giỏ hàng gửi lên</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon icon-amber">
+                                <i class="fa-solid fa-coins"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Doanh thu</span>
+                                <h3 id="dash-total-revenue" class="stat-value">0 đ</h3>
+                                <span class="stat-sub text-success">Đơn đã giao thành công</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bảng đơn hàng gần đây -->
+                    <div class="panel-box">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                                <span>Đơn hàng gần đây</span>
+                            </div>
+                            <button class="btn btn-sm btn-outline" onclick="switchTab('orders')">
+                                Xem tất cả đơn hàng &rarr;
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã ĐH</th>
+                                        <th>Khách hàng</th>
+                                        <th>Ngày đặt</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Trạng thái</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dash-recent-orders">
+                                    <!-- Render từ JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 2 Cột bên dưới: Cảnh báo Tồn kho & Thống kê Doanh thu -->
+                    <div class="two-col-grid">
+                        <!-- Cột Trái: Tồn kho -->
+                        <div class="panel-box">
+                            <div class="panel-header">
+                                <div class="panel-title">
+                                    <i class="fa-solid fa-triangle-exclamation text-warning"></i>
+                                    <span>Tồn kho cần lưu ý</span>
+                                </div>
+                                <button class="btn btn-sm btn-outline" onclick="switchTab('inventory')">
+                                    Quản lý kho &rarr;
+                                </button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên sản phẩm</th>
+                                            <th>Mã SP</th>
+                                            <th>Số lượng</th>
+                                            <th>Trạng thái</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dash-inventory-list">
+                                        <!-- Render từ JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Cột Phải: Thống kê doanh thu theo danh mục -->
+                        <div class="panel-box">
+                            <div class="panel-header">
+                                <div class="panel-title">
+                                    <i class="fa-solid fa-chart-column text-primary"></i>
+                                    <span>Doanh thu theo loại đồng hồ</span>
+                                </div>
+                                <span class="text-muted text-sm">Phân bổ tỷ trọng</span>
+                            </div>
+                            <div class="chart-container" id="dash-category-chart">
+                                <!-- Biểu đồ cột CSS Flexbox render từ JS -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ----------------- TAB 2: QUẢN LÝ SẢN PHẨM ----------------- -->
+                <section id="tab-products" class="tab-pane">
+                    <div class="panel-box">
+                        <div class="toolbar">
+                            <div class="toolbar-left">
+                                <button class="btn btn-primary" onclick="openProductModal()">
+                                    <i class="fa-solid fa-plus"></i> Thêm sản phẩm mới
+                                </button>
+                                <div class="search-input-wrap">
+                                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                    <input type="text" id="prod-search" class="form-control" placeholder="Tìm theo tên hoặc mã SP..." oninput="handleProductFilter()">
+                                </div>
+                            </div>
+                            <div class="toolbar-right">
+                                <select id="prod-cat-filter" class="form-control" onchange="handleProductFilter()">
+                                    <option value="">-- Tất cả danh mục --</option>
+                                    <option value="Nam">Đồng hồ Nam</option>
+                                    <option value="Nữ">Đồng hồ Nữ</option>
+                                    <option value="Thể thao">Đồng hồ Thể thao</option>
+                                </select>
+                                <select id="prod-status-filter" class="form-control" onchange="handleProductFilter()">
+                                    <option value="">-- Tất cả trạng thái --</option>
+                                    <option value="active">Đang bán</option>
+                                    <option value="hidden">Đã ẩn</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã SP</th>
+                                        <th>Hình ảnh</th>
+                                        <th>Tên đồng hồ</th>
+                                        <th>Loại</th>
+                                        <th>Giá bán</th>
+                                        <th>Giá nhập</th>
+                                        <th>Tồn kho</th>
+                                        <th>Trạng thái</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="product-table-body">
+                                    <!-- Render từ JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ----------------- TAB 3: QUẢN LÝ ĐƠN HÀNG ----------------- -->
+                <section id="tab-orders" class="tab-pane">
+                    <div class="panel-box">
+                        <div class="toolbar">
+                            <div class="toolbar-left">
+                                <div class="search-input-wrap">
+                                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                    <input type="text" id="order-search" class="form-control" placeholder="Tìm theo mã ĐH, tên khách, SĐT..." oninput="handleOrderFilter()">
+                                </div>
+                            </div>
+                            <div class="toolbar-right">
+                                <div class="filter-group">
+                                    <label for="order-status-filter">Trạng thái:</label>
+                                    <select id="order-status-filter" class="form-control" onchange="handleOrderFilter()">
+                                        <option value="">Tất cả đơn hàng</option>
+                                        <option value="Chờ xử lý">Chờ xử lý</option>
+                                        <option value="Đã xác nhận">Đã xác nhận</option>
+                                        <option value="Đang giao">Đang giao</option>
+                                        <option value="Đã giao">Đã giao</option>
+                                        <option value="Đã hủy">Đã hủy</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã đơn</th>
+                                        <th>Khách hàng</th>
+                                        <th>Số điện thoại</th>
+                                        <th>Ngày đặt</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Phương thức TT</th>
+                                        <th>Trạng thái</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="order-table-body">
+                                    <!-- Render từ JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ----------------- TAB 4: QUẢN LÝ KHÁCH HÀNG ----------------- -->
+                <section id="tab-customers" class="tab-pane">
+                    <div class="panel-box">
+                        <div class="toolbar">
+                            <div class="toolbar-left">
+                                <button class="btn btn-primary" onclick="openCustomerModal()">
+                                    <i class="fa-solid fa-user-plus"></i> Thêm khách hàng
+                                </button>
+                                <div class="search-input-wrap">
+                                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                    <input type="text" id="cust-search" class="form-control" placeholder="Tìm theo tên, SĐT, email..." oninput="handleCustomerFilter()">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã KH</th>
+                                        <th>Họ và tên</th>
+                                        <th>Số điện thoại</th>
+                                        <th>Email</th>
+                                        <th>Địa chỉ</th>
+                                        <th>Số đơn mua</th>
+                                        <th>Tổng chi tiêu</th>
+                                        <th>Trạng thái</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="customer-table-body">
+                                    <!-- Render từ JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ----------------- TAB 5: PHIẾU NHẬP HÀNG ----------------- -->
+                <section id="tab-imports" class="tab-pane">
+                    <div class="panel-box">
+                        <div class="toolbar">
+                            <div class="toolbar-left">
+                                <button class="btn btn-primary" onclick="openImportModal()">
+                                    <i class="fa-solid fa-plus"></i> Tạo phiếu nhập hàng
+                                </button>
+                                <div class="search-input-wrap">
+                                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                    <input type="text" id="import-search" class="form-control" placeholder="Tìm theo mã phiếu, sản phẩm..." oninput="handleImportFilter()">
+                                </div>
+                            </div>
+                            <div class="toolbar-right">
+                                <span class="summary-text" id="import-total-summary">Tổng tiền nhập hàng: 0 đ</span>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã phiếu</th>
+                                        <th>Sản phẩm</th>
+                                        <th>Số lượng nhập</th>
+                                        <th>Giá nhập</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Nhà cung cấp</th>
+                                        <th>Người lập</th>
+                                        <th>Ngày nhập</th>
+                                        <th>Xóa</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="import-table-body">
+                                    <!-- Render từ JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ----------------- TAB 6: TỒN KHO ----------------- -->
+                <section id="tab-inventory" class="tab-pane">
+                    <div class="stats-grid stats-grid-3">
+                        <div class="stat-card">
+                            <div class="stat-icon icon-blue">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Tổng tồn kho toàn bộ</span>
+                                <h3 id="inv-total-quantity" class="stat-value">0</h3>
+                                <span class="stat-sub text-muted">Chiếc đồng hồ</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon icon-amber">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Sắp hết hàng (1 - 5 chiếc)</span>
+                                <h3 id="inv-low-count" class="stat-value">0</h3>
+                                <span class="stat-sub text-warning">Cần chuẩn bị nhập thêm</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon icon-red">
+                                <i class="fa-solid fa-circle-xmark"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Hết hàng tồn kho (0 chiếc)</span>
+                                <h3 id="inv-out-count" class="stat-value">0</h3>
+                                <span class="stat-sub text-danger">Khách không thể mua</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-box">
+                        <div class="toolbar">
+                            <div class="toolbar-left">
+                                <span class="panel-subtitle">Bảng theo dõi và cảnh báo tồn kho sản phẩm:</span>
+                            </div>
+                            <div class="toolbar-right">
+                                <select id="inv-filter-type" class="form-control" onchange="renderInventoryTable()">
+                                    <option value="all">Tất cả sản phẩm</option>
+                                    <option value="low">Sắp hết (<= 5 cái)</option>
+                                    <option value="out">Hết hàng (0 cái)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã SP</th>
+                                        <th>Ảnh</th>
+                                        <th>Tên đồng hồ</th>
+                                        <th>Danh mục</th>
+                                        <th>Tồn kho hiện tại</th>
+                                        <th>Tình trạng</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inventory-table-body">
+                                    <!-- Render từ JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ----------------- TAB 7: GIÁ BÁN & LỢI NHUẬN ----------------- -->
+                <section id="tab-profit" class="tab-pane">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon icon-blue">
+                                <i class="fa-solid fa-money-bill-trend-up"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Doanh thu bán ra (Đã giao)</span>
+                                <h3 id="profit-total-sales" class="stat-value">0 đ</h3>
+                                <span class="stat-sub text-muted">Doanh thu thực nhận</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon icon-amber">
+                                <i class="fa-solid fa-receipt"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Tổng vốn hàng bán (COGS)</span>
+                                <h3 id="profit-total-cost" class="stat-value">0 đ</h3>
+                                <span class="stat-sub text-muted">Giá vốn sản phẩm đã giao</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon icon-green">
+                                <i class="fa-solid fa-piggy-bank"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Lợi nhuận gộp thực tế</span>
+                                <h3 id="profit-total-profit" class="stat-value">0 đ</h3>
+                                <span class="stat-sub text-success">Doanh thu trừ Giá vốn</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon icon-purple">
+                                <i class="fa-solid fa-percent"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Tỷ suất lợi nhuận TB</span>
+                                <h3 id="profit-margin-avg" class="stat-value">0%</h3>
+                                <span class="stat-sub text-muted">(Lợi nhuận / Doanh thu)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-box">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <i class="fa-solid fa-scale-balanced"></i>
+                                <span>Bảng phân tích biên lợi nhuận trên từng sản phẩm</span>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã SP</th>
+                                        <th>Tên đồng hồ</th>
+                                        <th>Giá nhập (costPrice)</th>
+                                        <th>Giá bán (price)</th>
+                                        <th>Chênh lệch (Lãi/cái)</th>
+                                        <th>Biên lợi nhuận (%)</th>
+                                        <th>Đánh giá</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="profit-table-body">
+                                    <!-- Render từ JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ----------------- TAB 8: CÀI ĐẶT & DỮ LIỆU ----------------- -->
+                <section id="tab-settings" class="tab-pane">
+                    <div class="settings-grid">
+                        <div class="panel-box">
+                            <div class="panel-header">
+                                <div class="panel-title">
+                                    <i class="fa-solid fa-database"></i>
+                                    <span>Quản lý dữ liệu LocalStorage</span>
+                                </div>
+                            </div>
+                            <div class="settings-content">
+                                <p class="text-muted">Hệ thống lưu trữ toàn bộ dữ liệu (Sản phẩm, Đơn hàng, Khách hàng, Nhập kho) trên trình duyệt qua <code>localStorage</code>. Bạn có thể khôi phục dữ liệu ban đầu để thuận tiện chạy thử nghiệm hoặc demo cho thầy/cô chấm điểm.</p>
+                                
+                                <div class="btn-group-stacked">
+                                    <button class="btn btn-warning" onclick="handleResetSampleData()">
+                                        <i class="fa-solid fa-rotate-left"></i> Khôi phục dữ liệu mẫu ban đầu
+                                    </button>
+                                    <button class="btn btn-danger" onclick="handleClearAllData()">
+                                        <i class="fa-solid fa-trash-can"></i> Xóa toàn bộ dữ liệu localStorage
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-box">
+                            <div class="panel-header">
+                                <div class="panel-title">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                    <span>Thông tin đồ án Web 1</span>
+                                </div>
+                            </div>
+                            <div class="settings-content">
+                                <ul class="info-list">
+                                    <li><strong>Tên đồ án:</strong> Website Bán Đồng Hồ Trực Tuyến (WatchStore)</li>
+                                    <li><strong>Thành viên phụ trách trang Admin:</strong> Nhật Vinh (admin.html, admin.js, admin.css)</li>
+                                    <li><strong>Cấu trúc sản phẩm:</strong> <code>id, name, category, price, costPrice, quantity, image, description, isActive</code></li>
+                                    <li><strong>Các khóa localStorage:</strong> <code>products, cart, users, orders, imports</code></li>
+                                    <li><strong>Công nghệ:</strong> HTML5, CSS3, JavaScript thuần (DOM, localStorage)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+
+    <!-- ==================== CÁC MODAL HỘP THOẠI POPUP ==================== -->
+
+    <!-- 1. MODAL THÊM / SỬA SẢN PHẨM -->
+    <div id="modal-product" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modal-product-title">Thêm sản phẩm mới</h3>
+                <button class="modal-close-btn" onclick="closeProductModal()">&times;</button>
+            </div>
+            <form id="product-form" onsubmit="handleSaveProduct(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="prod-form-mode" value="add">
+                    
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <label for="prod-id">Mã sản phẩm (ID) *</label>
+                            <input type="text" id="prod-id" class="form-control" placeholder="VD: DH007" required>
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="prod-category">Danh mục *</label>
+                            <select id="prod-category" class="form-control" required>
+                                <option value="Nam">Đồng hồ Nam</option>
+                                <option value="Nữ">Đồng hồ Nữ</option>
+                                <option value="Thể thao">Đồng hồ Thể thao</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="prod-name">Tên đồng hồ *</label>
+                        <input type="text" id="prod-name" class="form-control" placeholder="VD: Casio Edifice EFB-109D" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-4">
+                            <label for="prod-price">Giá bán (VNĐ) *</label>
+                            <input type="number" id="prod-price" class="form-control" min="0" placeholder="VD: 3500000" required>
+                        </div>
+                        <div class="form-group col-4">
+                            <label for="prod-cost">Giá nhập (VNĐ) *</label>
+                            <input type="number" id="prod-cost" class="form-control" min="0" placeholder="VD: 2500000" required>
+                        </div>
+                        <div class="form-group col-4">
+                            <label for="prod-quantity">Số lượng tồn kho *</label>
+                            <input type="number" id="prod-quantity" class="form-control" min="0" placeholder="VD: 15" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="prod-image">Đường dẫn hình ảnh *</label>
+                        <div class="image-input-group">
+                            <input type="text" id="prod-image" class="form-control" placeholder="VD: images/EFB-109D-5AV.jpe hoặc URL ảnh" required oninput="previewProductImage(this.value)">
+                            <select id="prod-sample-image" class="form-control" onchange="selectSampleImage(this.value)">
+                                <option value="">-- Chọn ảnh mẫu có sẵn --</option>
+                                <option value="images/EFB-109D-5AV.jpe">Casio EFB-109D</option>
+                                <option value="images/EFB-730L-7AV.jpe">Casio EFB-730L</option>
+                                <option value="images/EFR-S567D-1AV.jpe">Casio EFR-S567D</option>
+                                <option value="images/GA-2100-1A1DR.jpe">G-Shock GA-2100</option>
+                            </select>
+                        </div>
+                        <div class="image-preview-container">
+                            <img id="prod-preview-img" src="" alt="Xem trước ảnh" style="display: none;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="prod-description">Mô tả chi tiết</label>
+                        <textarea id="prod-description" class="form-control" rows="3" placeholder="Nhập mô tả về chất liệu kính, dây, khả năng chống nước..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="prod-is-active" checked>
+                            <span>Đang mở bán sản phẩm này (Hiển thị ngoài trang chủ)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeProductModal()">Hủy bỏ</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-product">Lưu sản phẩm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- 2. MODAL XEM CHI TIẾT ĐƠN HÀNG -->
+    <div id="modal-order" class="modal-overlay">
+        <div class="modal-card modal-large">
+            <div class="modal-header">
+                <h3>Chi tiết đơn hàng: <span id="modal-order-id" class="text-primary"></span></h3>
+                <button class="modal-close-btn" onclick="closeOrderModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="order-info-grid">
+                    <div class="info-block">
+                        <h4>Thông tin người nhận</h4>
+                        <p><strong>Khách hàng:</strong> <span id="modal-order-customer"></span></p>
+                        <p><strong>Điện thoại:</strong> <span id="modal-order-phone"></span></p>
+                        <p><strong>Địa chỉ:</strong> <span id="modal-order-address"></span></p>
+                        <p><strong>Email:</strong> <span id="modal-order-email"></span></p>
+                    </div>
+                    <div class="info-block">
+                        <h4>Thông tin đơn hàng</h4>
+                        <p><strong>Ngày đặt:</strong> <span id="modal-order-date"></span></p>
+                        <p><strong>Phương thức TT:</strong> <span id="modal-order-payment"></span></p>
+                        <p><strong>Trạng thái hiện tại:</strong> <span id="modal-order-status-badge"></span></p>
+                    </div>
+                </div>
+
+                <h4 class="mt-4">Danh sách sản phẩm trong đơn</h4>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Mã SP</th>
+                                <th>Tên đồng hồ</th>
+                                <th>Đơn giá</th>
+                                <th>Số lượng</th>
+                                <th>Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modal-order-items-body">
+                            <!-- Render từ JS -->
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="4" class="text-right">Tổng thanh toán:</th>
+                                <th id="modal-order-grand-total" class="text-primary font-bold">0 đ</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div class="status-updater-box mt-4">
+                    <label for="modal-order-change-status"><strong>Cập nhật trạng thái đơn:</strong></label>
+                    <div class="d-flex gap-2 align-items-center">
+                        <select id="modal-order-change-status" class="form-control">
+                            <option value="Chờ xử lý">Chờ xử lý</option>
+                            <option value="Đã xác nhận">Đã xác nhận</option>
+                            <option value="Đang giao">Đang giao</option>
+                            <option value="Đã giao">Đã giao</option>
+                            <option value="Đã hủy">Đã hủy</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="handleSaveOrderStatus()">Cập nhật ngay</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeOrderModal()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 3. MODAL TẠO PHIẾU NHẬP HÀNG -->
+    <div id="modal-import" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Tạo phiếu nhập hàng vào kho</h3>
+                <button class="modal-close-btn" onclick="closeImportModal()">&times;</button>
+            </div>
+            <form id="import-form" onsubmit="handleSaveImport(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="import-id">Mã phiếu nhập *</label>
+                        <input type="text" id="import-id" class="form-control" required readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="import-product-select">Chọn sản phẩm cần nhập *</label>
+                        <select id="import-product-select" class="form-control" required onchange="handleSelectImportProduct(this.value)">
+                            <option value="">-- Chọn sản phẩm có sẵn --</option>
+                            <!-- Render từ JS -->
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <label for="import-qty">Số lượng nhập thêm *</label>
+                            <input type="number" id="import-qty" class="form-control" min="1" value="10" required oninput="calculateImportTotal()">
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="import-price">Đơn giá nhập (VNĐ) *</label>
+                            <input type="number" id="import-price" class="form-control" min="0" required oninput="calculateImportTotal()">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tổng giá trị phiếu nhập:</label>
+                        <div id="import-total-display" class="total-highlight">0 đ</div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <label for="import-supplier">Nhà cung cấp *</label>
+                            <input type="text" id="import-supplier" class="form-control" value="Công ty Phân Phối Casio Việt Nam" required>
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="import-person">Người lập phiếu *</label>
+                            <input type="text" id="import-person" class="form-control" value="Nhật Vinh" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeImportModal()">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Xác nhận nhập kho</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- 4. MODAL THÊM / SỬA KHÁCH HÀNG -->
+    <div id="modal-customer" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modal-customer-title">Thêm khách hàng mới</h3>
+                <button class="modal-close-btn" onclick="closeCustomerModal()">&times;</button>
+            </div>
+            <form id="customer-form" onsubmit="handleSaveCustomer(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="cust-form-mode" value="add">
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <label for="modal-cust-id">Mã khách hàng *</label>
+                            <input type="text" id="modal-cust-id" class="form-control" required readonly>
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="modal-cust-phone">Số điện thoại *</label>
+                            <input type="tel" id="modal-cust-phone" class="form-control" placeholder="VD: 0912345678" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-cust-name">Họ và tên *</label>
+                        <input type="text" id="modal-cust-name" class="form-control" placeholder="VD: Nguyễn Văn A" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-cust-email">Email</label>
+                        <input type="email" id="modal-cust-email" class="form-control" placeholder="VD: khachhang@gmail.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-cust-address">Địa chỉ</label>
+                        <input type="text" id="modal-cust-address" class="form-control" placeholder="VD: Số 123 Cầu Giấy, Hà Nội">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeCustomerModal()">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu thông tin</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Container chứa Toast thông báo -->
+    <div id="toast-container"></div>
+
+    <!-- NẠP CÁC FILE JAVASCRIPT THEO THỨ TỰ QUY ƯỚC -->
+    <script src="storage.js"></script>
+    <script src="data.js"></script>
+    <script src="common.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
+
