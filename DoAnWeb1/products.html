@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết sản phẩm - WatchStore</title>
+    <link rel="stylesheet" href="products.css">
+</head>
+<body>
+    <header>
+        <p><strong>WatchStore</strong></p>
+        <nav aria-label="Điều hướng chính">
+            <a href="index.html">Trang chủ</a>
+            <a href="../cart.html">Giỏ hàng</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Chi tiết sản phẩm</h1>
+        <p id="product-message" role="status" aria-live="polite">
+            Đang tải thông tin sản phẩm...
+        </p>
+
+        <section id="product-detail" aria-labelledby="product-name" hidden>
+            <img id="product-image" alt="" hidden>
+            <p id="product-image-message" role="status" hidden>
+                Không có hình ảnh cho sản phẩm này.
+            </p>
+
+            <h2 id="product-name"></h2>
+
+            <dl>
+                <dt>Giá bán</dt>
+                <dd id="product-price"></dd>
+
+                <dt>Mô tả</dt>
+                <dd id="product-description"></dd>
+
+                <dt>Danh mục</dt>
+                <dd id="product-category"></dd>
+
+                <dt>Số lượng tồn kho</dt>
+                <dd id="product-quantity"></dd>
+            </dl>
+
+            <section aria-labelledby="purchase-heading">
+                <h3 id="purchase-heading">Thêm vào giỏ hàng</h3>
+
+                <label for="product-cart-quantity">Số lượng mua</label>
+                <input
+                    id="product-cart-quantity"
+                    type="number"
+                    min="1"
+                    step="1"
+                    value="1"
+                >
+
+                <button id="add-to-cart-button" type="button">
+                    Thêm vào giỏ hàng
+                </button>
+
+                <p id="cart-message" role="status" aria-live="polite"></p>
+            </section>
+        </section>
+    </main>
+
+    <footer>
+        <p>Website bán đồng hồ</p>
+    </footer>
+
+    <script src="storage.js"></script>
+    <script src="data.js"></script>
+    <script src="products.js"></script>
+</body>
+</html>
