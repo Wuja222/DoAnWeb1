@@ -3,9 +3,6 @@
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get("id");
 
-    initData();
-    const products = getData("products");
-
     const message = document.getElementById("product-message");
     const productDetail = document.getElementById("product-detail");
     const quantityInput = document.getElementById("product-cart-quantity");
@@ -13,6 +10,37 @@
     const cartMessage = document.getElementById("cart-message");
     const image = document.getElementById("product-image");
     const imageMessage = document.getElementById("product-image-message");
+
+    // Chỉ khởi tạo mẫu khi khóa products chưa tồn tại; mảng rỗng là dữ liệu hợp lệ.
+    if (localStorage.getItem("products") === null) {
+        initData();
+    }
+
+    const rawProducts = localStorage.getItem("products");
+
+    if (rawProducts === null) {
+        message.textContent = "Không thể khởi tạo dữ liệu sản phẩm.";
+        return;
+    }
+
+    if (rawProducts.trim() === "") {
+        message.textContent = "Dữ liệu sản phẩm bị hỏng.";
+        return;
+    }
+
+    try {
+        JSON.parse(rawProducts);
+    } catch (error) {
+        message.textContent = "Dữ liệu sản phẩm bị hỏng.";
+        return;
+    }
+
+    const products = getData("products");
+
+    if (!Array.isArray(products)) {
+        message.textContent = "Dữ liệu sản phẩm không đúng định dạng.";
+        return;
+    }
 
     // Tìm sản phẩm bằng ID sau khi loại bỏ khoảng trắng thừa.
     function findProductById(id) {
@@ -47,7 +75,7 @@
     }
 
     // Hiển thị thông tin sản phẩm; giá dùng hàm định dạng có sẵn của dự án.
-    message.textContent = "";
+    message.textContent = "Thông tin sản phẩm đã sẵn sàng.";
     productDetail.hidden = false;
 
     document.getElementById("product-name").textContent = product.name;
